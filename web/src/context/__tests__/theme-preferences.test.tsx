@@ -33,7 +33,7 @@ const savedPreferences = {
   'newapi:theme:v1:font': 'serif',
   'newapi:theme:v1:radius': 'lg',
   'newapi:theme:v1:scale': 'sm',
-  'newapi:theme:v1:content-layout': 'centered',
+  'newapi:theme:v1:content-layout': 'full',
 }
 
 function ThemeControls() {
@@ -66,7 +66,7 @@ function ThemeControls() {
           customization.setFont('serif')
           customization.setRadius('lg')
           customization.setScale('sm')
-          customization.setContentLayout('centered')
+          customization.setContentLayout('full')
         }}
       >
         Customize
@@ -119,17 +119,20 @@ describe('theme preference persistence', () => {
     document.cookie = 'theme_font=serif; path=/'
     document.cookie = 'theme_radius=xl; path=/'
     document.cookie = 'theme_scale=lg; path=/'
-    document.cookie = 'theme_content_layout=centered; path=/'
+    document.cookie = 'theme_content_layout=full; path=/'
 
     render(<ThemeFixture />)
 
     expect(screen.getByLabelText('Theme mode')).toHaveTextContent('system')
     expect(document.documentElement).toHaveClass('light')
-    expect(document.body).not.toHaveAttribute('data-theme-preset')
+    expect(document.body).toHaveAttribute('data-theme-preset', 'forest-whisper')
     expect(document.body).toHaveAttribute('data-theme-font', 'system')
     expect(document.body).not.toHaveAttribute('data-theme-radius')
     expect(document.body).not.toHaveAttribute('data-theme-scale')
-    expect(document.body).toHaveAttribute('data-theme-content-layout', 'full')
+    expect(document.body).toHaveAttribute(
+      'data-theme-content-layout',
+      'centered'
+    )
   })
 
   it('restores all customized preferences after remounting without writing cookies', async () => {
@@ -146,10 +149,7 @@ describe('theme preference persistence', () => {
     expect(document.body).toHaveAttribute('data-theme-font', 'serif')
     expect(document.body).toHaveAttribute('data-theme-radius', 'lg')
     expect(document.body).toHaveAttribute('data-theme-scale', 'sm')
-    expect(document.body).toHaveAttribute(
-      'data-theme-content-layout',
-      'centered'
-    )
+    expect(document.body).toHaveAttribute('data-theme-content-layout', 'full')
     for (const [key, value] of Object.entries(savedPreferences)) {
       expect(localStorage.getItem(key)).toBe(value)
     }
@@ -171,11 +171,14 @@ describe('theme preference persistence', () => {
 
     expect(screen.getByLabelText('Theme mode')).toHaveTextContent('system')
     expect(document.documentElement).toHaveClass('light')
-    expect(document.body).not.toHaveAttribute('data-theme-preset')
+    expect(document.body).toHaveAttribute('data-theme-preset', 'forest-whisper')
     expect(document.body).toHaveAttribute('data-theme-font', 'system')
     expect(document.body).not.toHaveAttribute('data-theme-radius')
     expect(document.body).not.toHaveAttribute('data-theme-scale')
-    expect(document.body).toHaveAttribute('data-theme-content-layout', 'full')
+    expect(document.body).toHaveAttribute(
+      'data-theme-content-layout',
+      'centered'
+    )
     for (const key of Object.keys(savedPreferences)) {
       expect(localStorage.getItem(key)).toBeNull()
     }
@@ -193,11 +196,17 @@ describe('theme preference persistence', () => {
       render(<ThemeFixture />)
 
       expect(screen.getByLabelText('Theme mode')).toHaveTextContent('system')
-      expect(document.body).not.toHaveAttribute('data-theme-preset')
+      expect(document.body).toHaveAttribute(
+        'data-theme-preset',
+        'forest-whisper'
+      )
       expect(document.body).toHaveAttribute('data-theme-font', 'system')
       expect(document.body).not.toHaveAttribute('data-theme-radius')
       expect(document.body).not.toHaveAttribute('data-theme-scale')
-      expect(document.body).toHaveAttribute('data-theme-content-layout', 'full')
+      expect(document.body).toHaveAttribute(
+        'data-theme-content-layout',
+        'centered'
+      )
     }
   )
 
@@ -209,7 +218,7 @@ describe('theme preference persistence', () => {
     render(<ThemeFixture />)
 
     expect(screen.getByLabelText('Theme mode')).toHaveTextContent('system')
-    expect(document.body).not.toHaveAttribute('data-theme-preset')
+    expect(document.body).toHaveAttribute('data-theme-preset', 'forest-whisper')
   })
 
   it('still applies and resets preferences when storage writes fail', async () => {
@@ -230,7 +239,7 @@ describe('theme preference persistence', () => {
     await user.click(screen.getByRole('button', { name: 'Reset' }))
 
     expect(screen.getByLabelText('Theme mode')).toHaveTextContent('system')
-    expect(document.body).not.toHaveAttribute('data-theme-preset')
+    expect(document.body).toHaveAttribute('data-theme-preset', 'forest-whisper')
   })
 
   it('preserves saved theme preferences during frontend cache initialization', () => {

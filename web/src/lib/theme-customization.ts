@@ -112,11 +112,11 @@ export type ThemeCustomization = {
 }
 
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
-  preset: 'default',
+  preset: 'forest-whisper',
   font: 'default',
   radius: 'default',
   scale: 'default',
-  contentLayout: 'full',
+  contentLayout: 'centered',
 }
 
 export const THEME_PRESET_VALUES = new Set(
